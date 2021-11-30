@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/images"/>
+    <qresource prefix="/">
+        <file>images/appmain.ico</file>
+        <file>images/connection.png</file>
+        <file>images/errorlog.png</file>
+        <file>images/logo.png</file>
+        <file>images/mainwindow.png</file>
+        <file>images/settings.png</file>
+        <file>images/update.png</file>
+    </qresource>
+</RCC>

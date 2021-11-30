@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>747</width>
+    <height>447</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>TASC Monitor</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/appmain.ico</normaloff>:/images/appmain.ico</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QLCDNumber" name="lcdNumber">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>95</height>
+       </size>
+      </property>
+      <property name="smallDecimalPoint">
+       <bool>false</bool>
+      </property>
+      <property name="digitCount">
+       <number>6</number>
+      </property>
+      <property name="value" stdset="0">
+       <double>100.230000000000004</double>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QCustomPlot" name="trend" native="true"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>747</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Настройки</string>
+    </property>
+    <addaction name="action_connect"/>
+    <addaction name="action_common"/>
+    <addaction name="separator"/>
+    <addaction name="action_log"/>
+    <addaction name="separator"/>
+    <addaction name="action_alarm"/>
+    <addaction name="separator"/>
+    <addaction name="action_trend"/>
+    <addaction name="action_top"/>
+    <addaction name="action_widget"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>Помощь</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_connect">
+   <property name="text">
+    <string>Подключение...</string>
+   </property>
+  </action>
+  <action name="action_common">
+   <property name="text">
+    <string>Общие...</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>О программе...</string>
+   </property>
+  </action>
+  <action name="action_log">
+   <property name="text">
+    <string>Показать журнал ошибок...</string>
+   </property>
+  </action>
+  <action name="action_alarm">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Отключить оповещения</string>
+   </property>
+  </action>
+  <action name="action_trend">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Показывать тренд</string>
+   </property>
+  </action>
+  <action name="action_ontop">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Поверх всех окон</string>
+   </property>
+  </action>
+  <action name="action_widget">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Режим виджета</string>
+   </property>
+  </action>
+  <action name="action_top">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Поверх всех окон</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>
