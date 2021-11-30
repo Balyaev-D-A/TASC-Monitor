@@ -51,12 +51,9 @@ MainWindow::MainWindow(QWidget *parent)
     restoreGeometry(settings->getGeometry());
     restoreState(settings->getState());
     ui->action_top->setChecked(settings->getOnTop());
- //       SetForegroundWindow(reinterpret_cast<HWND>(winId()));
-  //      setWindowFlag(Qt::WindowStaysOnTopHint);
-  //  }
 
     timer_update->setInterval(settings->getInterval() * 60000);
-    //qDebug() << "Setting port";
+
     while (!conDialog->setPort(settings->getPort()))
     {
         QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + " не найден или занят.\nПожалуйста укажите другой порт для соединения.");
@@ -64,7 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
             settings->setPort(conDialog->getPort());
         }
     }
-    //qDebug() << "Openning port";
+
     while (!flowmeter->serialConnect(settings->getPort()))
     {
         QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + ": " + flowmeter->getPortErrorString() + "\nПожалуйста укажите другой порт для соединения.");

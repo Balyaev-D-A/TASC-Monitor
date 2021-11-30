@@ -1,4 +1,3 @@
-//#include <QtDebug>
 #include "flowmeter.h"
 
 FlowMeter::FlowMeter(QObject *parent) : QObject(parent)
@@ -43,18 +42,15 @@ FlowResult FlowMeter::requestFlow()
     fr.flow = 0.0;
     fr.deviceError = 0;
 
-   // qDebug() << "Requesting flow";
     char cmd = 0x31;
     port->write(&cmd, 1);
     fr.dataSent = port->waitForBytesWritten(100);
     fr.dataRecieved = port->waitForReadyRead(500);
-  //  qDebug() << fr.dataSent << fr.dataRecieved;
     if (!fr.dataSent) return fr;
     if (!fr.dataRecieved) return fr;
 
 
     data = port->readAll();
-  //  qDebug() << "Data recieved: " << data;
     response = data[0];
     if (response != 0x31) { // если ответ не на мой запрос
         if (response == 0x45){  // если ошибка
@@ -67,8 +63,6 @@ FlowResult FlowMeter::requestFlow()
     msb = data[1];
     lsb = data[2];
     crc = data[3];
-    QString s;
-
 
     if (crc != static_cast<uchar>(response + msb + lsb)) {
         fr.deviceError = 0xe;  // Ошибка CRC в принятых данных
@@ -76,12 +70,7 @@ FlowResult FlowMeter::requestFlow()
     }
 
     flowdata = (msb << 8) + lsb;
-
-    s.sprintf("%x, %x, %x, %x, %x, %i", response, msb, lsb, crc, flowdata, flowdata);
-  //  qDebug() << s;
-
     fr.flow = (static_cast<float>(flowdata) / 10000) * MAX_FLOW;
- //   qDebug() << fr.flow;
     return fr;
 
 }
@@ -99,7 +88,7 @@ QString FlowMeter::deviceErrorCodeToString(uchar code)
     case 0x04:  //
     case 0x06:  //
     case 0x08:  //
-    case 0x10:  //  Ошибки UART. Могут возникать кучкой. Определятся битовой маской
+    case 0x10:  //  Ошибки UART. Могут возникать кучкой. Определяется битовой маской
     case 0x12:  //
     case 0x14:  //
     case 0x16:  //
