@@ -1,4 +1,4 @@
-#include <QtDebug>
+//#include <QtDebug>
 #include <QtMultimedia/QSound>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -52,23 +52,8 @@ MainWindow::MainWindow(QWidget *parent)
     restoreState(settings->getState());
     ui->action_top->setChecked(settings->getOnTop());
 
+
     timer_update->setInterval(settings->getInterval() * 60000);
-
-    while (!conDialog->setPort(settings->getPort()))
-    {
-        QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + " не найден или занят.\nПожалуйста укажите другой порт для соединения.");
-        if (conDialog->exec() == QDialog::Accepted) {
-            settings->setPort(conDialog->getPort());
-        }
-    }
-
-    while (!flowmeter->serialConnect(settings->getPort()))
-    {
-        QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + ": " + flowmeter->getPortErrorString() + "\nПожалуйста укажите другой порт для соединения.");
-        if (conDialog->exec() == QDialog::Accepted) {
-            settings->setPort(conDialog->getPort());
-        }
-    }
 
     QSharedPointer<QCPAxisTickerDateTime> ticker(new QCPAxisTickerDateTime);
     ticker->setDateTimeFormat("hh:mm");
@@ -95,6 +80,25 @@ MainWindow::MainWindow(QWidget *parent)
     ui->trend->yAxis->setRange(settings->getLEmergency() - 10, settings->getHEmergency() + 10);
     lastTick = QDateTime::currentDateTime().toTime_t();
     ui->trend->xAxis->setRange(lastTick, settings->getInterval() * 50 * 60, Qt::AlignRight);
+
+    ui->lcdNumber->setStyleSheet("QLCDNumber {background-color: lightgrey}");
+    ui->lcdNumber->display("---.--");
+    if (settings->getWidgetState()) this->onlyIndicator();
+    this->show();
+
+
+    if (!conDialog->setPort(settings->getPort()))
+    {
+        QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + " не найден или занят.\nПожалуйста укажите другой порт для соединения.");
+        return;
+    }
+
+    if (!flowmeter->serialConnect(settings->getPort()))
+    {
+        QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + ": " + flowmeter->getPortErrorString() + "\nПожалуйста укажите другой порт для соединения.");
+        return;
+    }
+
     updateFlow();
     timer_update->start();
 }
@@ -187,25 +191,28 @@ void MainWindow::showConnectDialog()
 {
     timer_update->stop();
     flowmeter->serialDisconnect();
+    conDialog->setPort(settings->getPort());
     if (conDialog->exec() == QDialog::Accepted) {
-        settings->setPort(conDialog->getPort());
-        while (!conDialog->setPort(settings->getPort()))
-        {
-            QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + " не найден или занят.\nПожалуйста укажите другой порт для соединения.");
-            if (conDialog->exec() == QDialog::Accepted) {
-                settings->setPort(conDialog->getPort());
-            }
+        if (conDialog->getPort() != "")
+            settings->setPort(conDialog->getPort());
+        else {
+            QMessageBox::critical(this, "Ошибка", "Порт не выбран");
+            ui->lcdNumber->setStyleSheet("QLCDNumber {background-color: lightgrey}");
+            ui->lcdNumber->display("---.--");
+            return;
         }
-        while (!flowmeter->serialConnect(settings->getPort()))
+    } else return;
+
+        if (!flowmeter->serialConnect(settings->getPort()))
         {
             QMessageBox::critical(this, "Ошибка", "Порт " + settings->getPort() + ": " + flowmeter->getPortErrorString() + "\nПожалуйста укажите другой порт для соединения.");
-            if (conDialog->exec() == QDialog::Accepted) {
-                settings->setPort(conDialog->getPort());
-            }
+            ui->lcdNumber->setStyleSheet("QLCDNumber {background-color: lightgrey}");
+            ui->lcdNumber->display("---.--");
+            return;
         }
-        updateFlow();
-        timer_update->start();
-    }
+    updateFlow();
+    timer_update->start();
+
 }
 
 void MainWindow::showCommonDialog()
@@ -219,7 +226,7 @@ void MainWindow::showCommonDialog()
         settings->setAutoUnShutUp(comDialog->getAutoUnShutUp());
         settings->setSound(comDialog->getSound());
         timer_update->stop();
-        timer_update->setInterval(settings->getInterval());
+        timer_update->setInterval(settings->getInterval() * 60000);
         timer_update->start();
         ui->trend->yAxis->setRange(settings->getLEmergency() - 10, settings->getHEmergency() + 10);
         ui->trend->replot();
@@ -308,6 +315,7 @@ void MainWindow::onlyIndicator()
     hide();
     setWindowFlag(Qt::FramelessWindowHint);
     show();
+    settings->setWidgetState(true);
 }
 
 void MainWindow::showLCDMenu(const QPoint &pos)
@@ -329,6 +337,7 @@ void MainWindow::showAll()
     ui->menubar->show();
     ui->statusbar->show();
     show();
+    settings->setWidgetState(false);
 }
 
 void MainWindow::quit()

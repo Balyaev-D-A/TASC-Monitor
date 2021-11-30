@@ -25,7 +25,6 @@ public slots:
 private:
     Ui::ConnectionDialog *ui;
     QList<QSerialPortInfo> available;
-    QSerialPortInfo *pInfo;
     QStringList ports;
 };
 

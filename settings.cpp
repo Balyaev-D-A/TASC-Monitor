@@ -30,6 +30,7 @@ void Settings::readSettings()
     settings.trend = s->value("trend", true).toBool();
     settings.sound = s->value("sound", true).toBool();
     settings.ontop = s->value("ontop", false).toBool();
+    settings.widgetstate = s->value("widgetstate", false).toBool();
     s->endGroup();
 }
 
@@ -51,6 +52,7 @@ void Settings::saveSettings()
     s->setValue("trend", settings.trend);
     s->setValue("sound", settings.sound);
     s->setValue("ontop", settings.ontop);
+    s->setValue("widgetstate", settings.widgetstate);
     s->endGroup();
 
     s->sync();
@@ -116,6 +118,11 @@ void Settings::setOnTop(bool val)
     settings.ontop = val;
 }
 
+void Settings::setWidgetState(bool val)
+{
+    settings.widgetstate = val;
+}
+
 QString Settings::getPort()
 {
     return settings.port;
@@ -174,4 +181,9 @@ bool Settings::getSound()
 bool Settings::getOnTop()
 {
     return settings.ontop;
+}
+
+bool Settings::getWidgetState()
+{
+    return settings.widgetstate;
 }

@@ -1,3 +1,4 @@
+#include <QtDebug>
 #include "flowmeter.h"
 
 FlowMeter::FlowMeter(QObject *parent) : QObject(parent)
@@ -38,19 +39,51 @@ FlowResult FlowMeter::requestFlow()
     uchar crc;
     short int flowdata;
     FlowResult fr;
+    char cmd;
+    short int maxflow;
 
     fr.flow = 0.0;
     fr.deviceError = 0;
 
-    char cmd = 0x31;
+    cmd = 0x73;
     port->write(&cmd, 1);
     fr.dataSent = port->waitForBytesWritten(100);
     fr.dataRecieved = port->waitForReadyRead(500);
+  //  qDebug() << fr.dataSent << fr.dataRecieved;
+    if (!fr.dataSent) return fr;
+    if (!fr.dataRecieved) return fr;
+    data = port->readAll();
+    qDebug() << "Data recieved: " << data;
+    response = data[0];
+    if (response != 0x31) { // если ответ не на мой запрос
+        if (response == 0x45){  // если ошибка
+            fr.deviceError = data[1];
+            return fr;
+        }
+        return fr;
+    }
+    crc = data[18];
+    msb = data[3];
+    lsb = data[4];
+ //   if (crc != static_cast<uchar>(data[0] + data[1] + data[2] + data[3] + data[4] + data[5] + data[6] + data[7] + data[8] + data[9] + data[10] + data[11] + data[12] + data[13] + data[14] + data[15] + data[16] + data[17])) {
+ //       fr.deviceError = 0xe;  // Ошибка CRC в принятых данных
+ //       return fr;
+ //   }
+    maxflow = (msb << 8) + lsb;
+    qDebug() << "Max flow = " << maxflow;
+
+   // qDebug() << "Requesting flow";
+    cmd = 0x31;
+    port->write(&cmd, 1);
+    fr.dataSent = port->waitForBytesWritten(100);
+    fr.dataRecieved = port->waitForReadyRead(500);
+  //  qDebug() << fr.dataSent << fr.dataRecieved;
     if (!fr.dataSent) return fr;
     if (!fr.dataRecieved) return fr;
 
 
     data = port->readAll();
+  //  qDebug() << "Data recieved: " << data;
     response = data[0];
     if (response != 0x31) { // если ответ не на мой запрос
         if (response == 0x45){  // если ошибка
@@ -63,6 +96,8 @@ FlowResult FlowMeter::requestFlow()
     msb = data[1];
     lsb = data[2];
     crc = data[3];
+    QString s;
+
 
     if (crc != static_cast<uchar>(response + msb + lsb)) {
         fr.deviceError = 0xe;  // Ошибка CRC в принятых данных
@@ -70,7 +105,12 @@ FlowResult FlowMeter::requestFlow()
     }
 
     flowdata = (msb << 8) + lsb;
-    fr.flow = (static_cast<float>(flowdata) / 10000) * MAX_FLOW;
+
+    s.sprintf("%x, %x, %x, %x, %x, %i", response, msb, lsb, crc, flowdata, flowdata);
+    qDebug() << s;
+
+    fr.flow = ((flowdata * maxflow) / 10000);
+    qDebug() << fr.flow;
     return fr;
 
 }
@@ -88,7 +128,7 @@ QString FlowMeter::deviceErrorCodeToString(uchar code)
     case 0x04:  //
     case 0x06:  //
     case 0x08:  //
-    case 0x10:  //  Ошибки UART. Могут возникать кучкой. Определяется битовой маской
+    case 0x10:  //  Ошибки UART. Могут возникать кучкой. Определятся битовой маской
     case 0x12:  //
     case 0x14:  //
     case 0x16:  //

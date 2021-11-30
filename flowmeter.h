@@ -6,7 +6,7 @@
 #include <QtSerialPort/QSerialPort>
 #include <QTimer>
 
-#define MAX_FLOW 150
+#define MAX_FLOW 250
 
 typedef struct {
     float flow;

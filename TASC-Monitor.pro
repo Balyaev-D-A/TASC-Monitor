@@ -53,7 +53,7 @@ RESOURCES += \
 
 win32:{
     VERSION = 1.0.0
-    QMAKE_TARGET_COMPANY = АО ВОЛГОДОНСКИЙ ИТЦ РК
+    QMAKE_TARGET_COMPANY = ООО ВОЛГОДОНСКИЙ ИТЦ РК
     QMAKE_TARGET_PRODUCT = TASC Monitor
     QMAKE_TARGET_DESCRIPTION = Мониторинг расхода воздуха через установку TASC-HTO-HT-C14
     QMAKE_TARGET_COPYRIGHT = Баляев Дмитрий Алексеевич

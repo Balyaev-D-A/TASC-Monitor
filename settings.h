@@ -17,6 +17,7 @@ typedef struct {
     bool trend;
     bool sound;
     bool ontop;
+    bool widgetstate;
 } tSettings;
 
 class Settings : public QObject
@@ -37,6 +38,7 @@ public:
     bool getTrend();
     bool getSound();
     bool getOnTop();
+    bool getWidgetState();
 
     void setPort(QString port);
     void setGeometry(QByteArray geometry);
@@ -50,6 +52,7 @@ public:
     void setTrend(bool val);
     void setSound(bool val);
     void setOnTop(bool val);
+    void setWidgetState(bool val);
 
     void readSettings();
     void saveSettings();

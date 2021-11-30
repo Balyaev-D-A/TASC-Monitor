@@ -175,7 +175,7 @@
      <item>
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Все права защищены АО &quot;ВОЛГОДОНСКИЙ ИТЦ РК&quot;</string>
+        <string>Все права защищены ООО &quot;ВОЛГОДОНСКИЙ ИТЦ РК&quot;</string>
        </property>
       </widget>
      </item>

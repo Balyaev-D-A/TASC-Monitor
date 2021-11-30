@@ -16,7 +16,6 @@ ConnectionDialog::ConnectionDialog(QWidget *parent) :
 ConnectionDialog::~ConnectionDialog()
 {
     delete ui;
-    delete pInfo;
 }
 
 void ConnectionDialog::updatePorts()
